@@ -42,15 +42,14 @@
   import Confrim from 'base/confirm/confirm.vue'
   import {getHotKey} from 'api/search'
   import {ERR_OK} from 'api/config'
-  import {mapActions, mapGetters} from 'vuex'
-  import {playListMixin} from 'common/js/mixin'
+  import {mapActions} from 'vuex'
+  import {playListMixin, searchMixin} from 'common/js/mixin'
 
   export default {
-    mixins: [playListMixin],
+    mixins: [playListMixin, searchMixin],
     data() {
       return {
-        hotKey: [],
-        query: ''
+        hotKey: []
       }
     },
     created() {
@@ -59,10 +58,7 @@
     computed: {
       shortcut() {
         return this.hotKey.concat(this.searchHistory)
-      },
-      ...mapGetters([
-        'searchHistory'
-      ])
+      }
     },
     methods: {
       handlePlayList(playList) {
@@ -71,18 +67,6 @@
         this.$refs.shortcut.refresh()
         this.$refs.searchResult.style.bottom = bottom
         this.$refs.suggest.refresh()
-      },
-      addQuery(query) {
-        this.$refs.searchBox.setQuery(query)
-      },
-      onQueryChange(query) {
-        this.query = query
-      },
-      blurInput() {
-        this.$refs.searchBox.blur()
-      },
-      saveSearch() {
-        this.saveSearchHistory(this.query)
       },
       showConfirm() {
         this.$refs.confrim.show()
@@ -95,8 +79,6 @@
         })
       },
       ...mapActions([
-        'saveSearchHistory',
-        'deleteSearchHistory',
         'clearSearchHistory'
       ])
     },
