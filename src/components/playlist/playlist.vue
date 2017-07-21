@@ -9,13 +9,13 @@
             <span class="clear" @click="showConfirm"><i class="icon-clear"></i></span>
           </h1>
         </div>
-        <scroll class="list-content" :data="sequenceList" ref="listContent">
+        <scroll class="list-content" :data="sequenceList" ref="listContent" :refresh-delay="refreshDelay">
           <transition-group tag="ul" name="list">
             <li :key="item.id" ref="listItem" class="item" v-for="(item, index) in sequenceList" @click="selectItem(item, index)">
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{item.name}}</span>
-              <span class="like">
-                <i class="icon-hot-favorite"></i>
+              <span class="like" @click.stop="toggleFavorite(item)">
+                <i :class="getFavoriteIcon(item)"></i>
               </span>
               <span class="delete" @click.stop="deleteOne(item)">
                 <i class="icon-delete"></i>
@@ -50,7 +50,8 @@
     mixins: [playMixin],
     data() {
       return {
-        showFlag: false
+        showFlag: false,
+        refreshDelay: 100
       }
     },
     computed: {

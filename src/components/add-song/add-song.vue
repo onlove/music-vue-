@@ -18,7 +18,7 @@
               <song-list :songs="playHistory" @select="selectSong"></song-list>
             </div>
           </scroll>
-          <scroll v-if="currentIndex === 1" :data="searchHistory" class="list-scroll" ref="searchList">
+          <scroll v-if="currentIndex === 1" :data="searchHistory" class="list-scroll" ref="searchList" :refresh-delay="refreshDelay">
             <div class="list-inner">
               <search-list @delete="deleteSearchHistory" @select="addQuery" :searches="searchHistory"></search-list>
             </div>
@@ -28,6 +28,12 @@
       <div class="search-result" v-show="query">
         <suggest :query="query" :show-singer="showSinger" @select="selectSuggest" @listScroll="blurInput"></suggest>
       </div>
+      <v-top-tip ref="topTip">
+        <div class="tip-title">
+          <i class="icon-ok"></i>
+          <span class="text">1首歌曲已经添加到播放列表</span>
+        </div>
+      </v-top-tip>
     </div>
   </transition>
 </template>
@@ -36,6 +42,7 @@
   import SearchBox from 'base/search-box/search-box'
   import Switches from 'base/switches/switches'
   import Scroll from 'base/scroll/scroll'
+  import Toptip from 'base/top-tip/top-tip.vue'
   import Suggest from 'components/suggest/suggest'
   import SearchList from 'base/search-list/search-list'
   import SongList from 'base/song-list/song-list'
@@ -76,6 +83,7 @@
       },
       selectSuggest() {
         this.saveSearch()
+        this.showTip()
       },
       switchItem(index) {
         this.currentIndex = index
@@ -83,7 +91,11 @@
       selectSong(song, index) {
         if (index !== 0) {
           this.insertSong(new Song(song))
+          this.showTip()
         }
+      },
+      showTip() {
+        this.$refs.topTip.show()
       },
       ...mapActions([
         'insertSong'
@@ -95,7 +107,8 @@
       Switches,
       Scroll,
       SongList,
-      SearchList
+      SearchList,
+      'v-top-tip': Toptip
     }
   }
 </script>
